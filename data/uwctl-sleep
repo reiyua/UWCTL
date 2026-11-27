@@ -1,0 +1,9 @@
+#!/bin/sh
+# systemd-sleep hook: the EC may forget fan tables and keyboard colours while
+# suspended, so ask uwctld to re-apply everything after resume.
+case "$1" in
+    post)
+        (sleep 2 && /usr/bin/uwctl apply >/dev/null 2>&1) &
+        ;;
+esac
+exit 0

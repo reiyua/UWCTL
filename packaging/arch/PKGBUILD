@@ -1,0 +1,29 @@
+# Build:   put uwctl-<version>.tar.gz (from 'make dist') next to this file, then
+#          makepkg -si
+pkgname=uwctl
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="Keyboard lighting, fan curves and power modes for Uniwill-based gaming laptops"
+arch=('any')
+license=('GPL-2.0-or-later')
+depends=('python' 'python-gobject' 'gtk4' 'libadwaita' 'systemd')
+makedepends=('make')
+checkdepends=('python-pytest')
+optdepends=('acpi_call: EC access with the stock linux kernel'
+            'acpi_call-lts: EC access with linux-lts'
+            'acpi_call-dkms: EC access with any other kernel (needs matching headers)')
+backup=()
+install=uwctl.install
+source=("uwctl-${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+check() {
+    cd "uwctl-${pkgver}"
+    python -m pytest -q tests
+}
+
+package() {
+    cd "uwctl-${pkgver}"
+    make install DESTDIR="${pkgdir}" PREFIX=/usr
+    python -m compileall -q -d /usr/lib/uwctl "${pkgdir}/usr/lib/uwctl"
+}

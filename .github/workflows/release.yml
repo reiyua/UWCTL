@@ -1,0 +1,33 @@
+name: Release
+
+# Push a tag like v0.2.0 to build the .deb and source tarball and attach them
+# to a GitHub release.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Tag must match __version__
+        run: |
+          v=$(sed -n 's/^__version__ = "\(.*\)"/\1/p' src/uwctl/__init__.py)
+          if [ "v$v" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match version $v in src/uwctl/__init__.py"
+            exit 1
+          fi
+      - run: python -m pip install pytest && python -m pytest -q tests
+      - run: make deb
+      - run: make dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

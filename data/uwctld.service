@@ -1,0 +1,32 @@
+[Unit]
+Description=Uniwill laptop control daemon (keyboard lighting, fans, power modes)
+After=systemd-modules-load.service
+Wants=systemd-modules-load.service
+# Never run alongside TUXEDO Control Center's daemon - both would drive the fans.
+Conflicts=tccd.service
+
+[Service]
+Type=simple
+ExecStartPre=-/sbin/modprobe acpi_call
+ExecStart=/usr/bin/uwctld
+# If the daemon dies while a software fan curve is running, give the fans back
+# to the firmware so they never stay stuck at the last speed.
+ExecStopPost=/usr/bin/uwctld --release-fans
+Restart=on-failure
+RestartSec=3
+RuntimeDirectory=uwctl
+RuntimeDirectoryMode=0755
+ConfigurationDirectory=uwctl
+# Hardening. The daemon needs /proc/acpi/call, /sys (LEDs, battery) and /dev/hidraw*.
+ProtectHome=yes
+ProtectSystem=full
+ReadWritePaths=/etc/uwctl
+PrivateTmp=yes
+NoNewPrivileges=yes
+RestrictAddressFamilies=AF_UNIX
+LockPersonality=yes
+RestrictRealtime=yes
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

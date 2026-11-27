@@ -1,0 +1,20 @@
+post_install() {
+    modprobe acpi_call 2>/dev/null || true
+    cat <<'EOF'
+==> uwctl installed.
+==> 1. Make sure acpi_call is installed for your kernel (acpi_call, acpi_call-lts or acpi_call-dkms).
+==> 2. Start the service:      sudo systemctl enable --now uwctld
+==> 3. Check your laptop:      uwctl doctor
+==>    (the logged-in desktop user gets access automatically; for SSH use
+==>     add yourself to the 'uwctl' group)
+EOF
+}
+
+post_upgrade() {
+    systemctl daemon-reload 2>/dev/null || true
+    systemctl try-restart uwctld.service 2>/dev/null || true
+}
+
+pre_remove() {
+    systemctl disable --now uwctld.service 2>/dev/null || true
+}

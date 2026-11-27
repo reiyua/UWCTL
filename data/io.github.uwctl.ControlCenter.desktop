@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Uniwill Control Center
+GenericName=Laptop Control Center
+Comment=Keyboard lighting, fan curves and power modes for Uniwill-based gaming laptops
+Exec=uwctl-gui
+Icon=io.github.uwctl.ControlCenter
+Terminal=false
+Categories=Settings;HardwareSettings;System;
+Keywords=keyboard;rgb;backlight;fan;fan curve;turbo;gaming;uniwill;tongfang;
+StartupNotify=true

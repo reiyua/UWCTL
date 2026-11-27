@@ -1,0 +1,29 @@
+name: Bug report
+description: Something is broken
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. uwctl fan custom --preset balanced
+        2. ...
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of `uwctl doctor`
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Service log (`journalctl -u uwctld -b --no-pager | tail -50`)
+      render: text
